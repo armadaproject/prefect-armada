@@ -1,18 +1,15 @@
 test:
     uv run pytest
 
-# Generate API reference documentation for prefect-armada
+# Generate API reference documentation for prefect-armada. Source links point
+# at this repository's `origin` remote.
 api-ref:
-    #!/usr/bin/env bash
-    REPO_ROOT="$(git rev-parse --show-toplevel)"
-    cd "$REPO_ROOT"
-    uvx --with-editable ./src/integrations/prefect-armada \
+    uvx --with-editable . \
         --python 3.12 \
         --isolated \
         'mdxify>=0.2.45' \
         --all \
         --root-module prefect_armada \
-        --output-dir docs/integrations/prefect-armada/api-ref \
+        --output-dir docs/api-ref \
         --anchor-name "prefect-armada-sdk-reference" \
-        --repo-url https://github.com/PrefectHQ/prefect \
         --include-inheritance

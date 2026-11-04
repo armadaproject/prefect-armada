@@ -18,7 +18,19 @@ from prefect.client.schemas import FlowRun
 from prefect.exceptions import InfrastructureError, InfrastructureNotFound
 from prefect.utilities.dockerutils import get_prefect_image_name
 from prefect.workers.base import BaseWorker
-from prefect.workers.utilities import get_locally_installed_worker_metadata
+
+try:
+    from prefect.workers.utilities import get_locally_installed_worker_metadata
+except ImportError:
+    # Not in released Prefect yet; it lets the server list locally installed
+    # workers, such as this one, in the UI's work pool type picker.
+    get_locally_installed_worker_metadata = None
+
+requires_local_worker_metadata = pytest.mark.skipif(
+    get_locally_installed_worker_metadata is None
+    or not hasattr(BaseWorker, "get_display_name"),
+    reason="this Prefect version does not list locally installed workers in the UI",
+)
 
 
 @pytest.fixture(autouse=True)
@@ -999,6 +1011,7 @@ class TestWorkPoolTypeMetadata:
     def test_worker_is_registered_under_its_type(self):
         assert BaseWorker.get_worker_class_from_type("armada") is ArmadaWorker
 
+    @requires_local_worker_metadata
     def test_display_name(self):
         assert ArmadaWorker.get_display_name() == "Armada"
 
@@ -1011,6 +1024,7 @@ class TestWorkPoolTypeMetadata:
     def test_documentation_url(self):
         assert ArmadaWorker.get_documentation_url().startswith("https://")
 
+    @requires_local_worker_metadata
     def test_collections_view_metadata(self):
         """Metadata the server merges into the `aggregate-worker-metadata` view."""
         metadata = get_locally_installed_worker_metadata()
