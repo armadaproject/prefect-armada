@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Any
 
 from armada_client.typings import JobState
-from prefect_armada.utilities import parse_job_pid
-
 from prefect import get_client
 from prefect.states import StateType
+
+from prefect_armada.utilities import parse_job_pid
 from prefect_armada_integration_tests.utils import armada, display, prefect_core
 
 DEFAULT_PARAMETERS = {"n": 5}  # Short sleep time for faster tests

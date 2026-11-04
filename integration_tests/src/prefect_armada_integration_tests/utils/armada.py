@@ -4,9 +4,10 @@ import time
 
 import grpc
 from armada_client.typings import JobState
+from rich.console import Console
+
 from prefect_armada.credentials import ArmadaCredentials
 from prefect_armada.utilities import job_state_from_value
-from rich.console import Console
 
 console = Console()
 

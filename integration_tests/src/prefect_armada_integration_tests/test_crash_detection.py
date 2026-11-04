@@ -2,10 +2,10 @@ import asyncio
 from typing import Any
 
 import anyio
-from prefect_armada.utilities import parse_job_pid
-
 from prefect import get_client
 from prefect.states import StateType
+
+from prefect_armada.utilities import parse_job_pid
 from prefect_armada_integration_tests.utils import armada, display, prefect_core
 
 

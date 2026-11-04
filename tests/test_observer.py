@@ -9,10 +9,6 @@ import grpc
 import pytest
 from armada_client.armada import event_pb2
 from conftest import FakeEventStream, FakeRpcError, make_event
-from prefect_armada import observer
-from prefect_armada.credentials import ArmadaCredentials
-from prefect_armada.exceptions import ArmadaObserverStartupError
-
 from prefect.client.schemas.objects import FlowRun
 from prefect.exceptions import Abort, ObjectNotFound
 from prefect.states import (
@@ -23,6 +19,10 @@ from prefect.states import (
     Running,
     Scheduled,
 )
+
+from prefect_armada import observer
+from prefect_armada.credentials import ArmadaCredentials
+from prefect_armada.exceptions import ArmadaObserverStartupError
 
 FLOW_RUN_ID = str(uuid.uuid4())
 PREFECT_ANNOTATIONS = {

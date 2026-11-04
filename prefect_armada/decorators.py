@@ -9,13 +9,13 @@ from typing import (
     TypeVar,
 )
 
-from typing_extensions import ParamSpec
-
 from prefect import Flow
 from prefect.flows import (
     InfrastructureBoundFlow,
     bind_flow_to_infrastructure,
 )
+from typing_extensions import ParamSpec
+
 from prefect_armada.worker import ArmadaWorker
 
 if TYPE_CHECKING:

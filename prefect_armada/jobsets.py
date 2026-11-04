@@ -7,8 +7,8 @@ from typing import Any
 
 from armada_client.armada import job_pb2, submit_pb2
 from armada_client.typings import JobState
-
 from prefect import task
+
 from prefect_armada.credentials import ArmadaCredentials
 from prefect_armada.utilities import job_state_from_value
 

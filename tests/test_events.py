@@ -3,6 +3,7 @@ from contextlib import aclosing
 from armada_client.armada import event_pb2
 from armada_client.event import Event
 from conftest import FakeEventStream, make_event
+
 from prefect_armada.events import (
     get_job_set_events,
     stream_job_set_events,

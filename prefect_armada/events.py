@@ -9,9 +9,9 @@ from contextlib import aclosing
 import anyio
 import grpc
 from armada_client.event import Event
-
 from prefect import task
 from prefect.logging.loggers import get_logger
+
 from prefect_armada.credentials import ArmadaCredentials
 
 logger = get_logger("prefect_armada.events")

@@ -4,10 +4,9 @@ from functools import partial
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import AliasChoices, AliasPath, BeforeValidator, Field, SecretStr
-
 from prefect.settings.base import PrefectBaseSettings, build_settings_config
 from prefect.types import validate_set_T_from_delim_string
+from pydantic import AliasChoices, AliasPath, BeforeValidator, Field, SecretStr
 
 JobSets = Annotated[
     set[str] | str | None,

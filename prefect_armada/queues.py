@@ -7,8 +7,8 @@ from typing import Any
 
 from armada_client.armada import submit_pb2
 from armada_client.permissions import Permissions
-
 from prefect import task
+
 from prefect_armada.credentials import ArmadaCredentials
 from prefect_armada.utilities import coerce_queues
 

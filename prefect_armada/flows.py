@@ -5,6 +5,7 @@ from collections.abc import Callable
 from typing import Any
 
 from prefect import flow, task
+
 from prefect_armada.jobs import ArmadaJob
 
 

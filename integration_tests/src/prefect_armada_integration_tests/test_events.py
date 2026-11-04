@@ -3,9 +3,9 @@ import os
 from typing import Any
 
 import anyio
-
 from prefect import get_client
 from prefect.states import StateType
+
 from prefect_armada_integration_tests.utils import display, prefect_core
 
 DEFAULT_PARAMETERS = {"n": 5}

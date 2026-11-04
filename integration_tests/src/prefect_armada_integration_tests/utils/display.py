@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+from prefect.client.schemas.objects import FlowRun
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-
-from prefect.client.schemas.objects import FlowRun
 
 console = Console()
 

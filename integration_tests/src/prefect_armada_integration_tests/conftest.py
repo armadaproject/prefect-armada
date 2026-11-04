@@ -4,8 +4,8 @@ from collections.abc import Generator
 from typing import Any
 
 import pytest
-from prefect_armada.settings import ArmadaSettings
 
+from prefect_armada.settings import ArmadaSettings
 from prefect_armada_integration_tests.utils import armada, kind
 
 

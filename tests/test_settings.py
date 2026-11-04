@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from prefect_armada.settings import (
     ArmadaSettings,
     ArmadaWorkerSubmitJobRetrySettings,

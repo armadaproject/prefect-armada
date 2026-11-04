@@ -6,8 +6,8 @@ from collections.abc import Callable
 
 from anyio.to_thread import run_sync
 from armada_client.log_client import LogLine
-
 from prefect import task
+
 from prefect_armada.credentials import ArmadaCredentials
 
 

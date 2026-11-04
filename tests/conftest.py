@@ -10,11 +10,11 @@ import yaml
 from armada_client.armada import event_pb2, job_pb2, submit_pb2
 from armada_client.asyncio_client import ArmadaAsyncIOClient
 from armada_client.event import Event
-from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
-from prefect_armada.jobs import ArmadaJob
-
 from prefect.settings import PREFECT_LOGGING_TO_API_ENABLED, temporary_settings
 from prefect.testing.utilities import prefect_test_harness
+
+from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
+from prefect_armada.jobs import ArmadaJob
 
 BASEDIR = (
     Path.cwd() / "src" / "integrations" / "prefect-armada" / "tests"

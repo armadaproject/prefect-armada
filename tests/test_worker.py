@@ -8,16 +8,16 @@ import grpc
 import pytest
 from armada_client.armada import submit_pb2
 from conftest import FakeRpcError, make_job_submit_response
-from prefect_armada import ArmadaWorker
-from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
-from prefect_armada.exceptions import ArmadaObserverStartupError
-from prefect_armada.worker import ArmadaWorkerJobConfiguration
-from pydantic import ValidationError
-
 from prefect.client.schemas import FlowRun
 from prefect.exceptions import InfrastructureError, InfrastructureNotFound
 from prefect.utilities.dockerutils import get_prefect_image_name
 from prefect.workers.base import BaseWorker
+from pydantic import ValidationError
+
+from prefect_armada import ArmadaWorker
+from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
+from prefect_armada.exceptions import ArmadaObserverStartupError
+from prefect_armada.worker import ArmadaWorkerJobConfiguration
 
 try:
     from prefect.workers.utilities import get_locally_installed_worker_metadata

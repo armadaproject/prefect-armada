@@ -138,19 +138,10 @@ import anyio
 import anyio.abc
 import anyio.to_thread
 import grpc
+import prefect
 from armada_client.armada import submit_pb2
 from armada_client.asyncio_client import ArmadaAsyncIOClient
 from jsonpatch import JsonPatch
-from pydantic import Field, field_validator, model_validator
-from tenacity import (
-    AsyncRetrying,
-    retry_if_exception,
-    stop_after_attempt,
-    wait_fixed,
-    wait_random,
-)
-
-import prefect
 from prefect.client.schemas.objects import Flow as APIFlow
 from prefect.exceptions import (
     InfrastructureError,
@@ -165,6 +156,15 @@ from prefect.workers.base import (
     BaseWorker,
     BaseWorkerResult,
 )
+from pydantic import Field, field_validator, model_validator
+from tenacity import (
+    AsyncRetrying,
+    retry_if_exception,
+    stop_after_attempt,
+    wait_fixed,
+    wait_random,
+)
+
 from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
 from prefect_armada.exceptions import (
     ArmadaObserverStartupError,

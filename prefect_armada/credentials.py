@@ -17,9 +17,9 @@ from armada_client.client import ArmadaClient
 # public `armada_client.log_client.JobLogClient` wrapper builds its own channel
 # and cannot carry call credentials, so we build the channel ourselves.
 from armada_client.internal.binoculars_client import BinocularsClient
+from prefect.blocks.core import Block
 from pydantic import Field, SecretStr
 
-from prefect.blocks.core import Block
 from prefect_armada.settings import ArmadaSettings
 from prefect_armada.utilities import _grpc_keepalive_options
 

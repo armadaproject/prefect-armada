@@ -1,6 +1,7 @@
 import pytest
 from armada_client.armada import submit_pb2
 from armada_client.typings import JobState
+
 from prefect_armada.exceptions import ArmadaJobDefinitionError
 from prefect_armada.utilities import (
     TERMINAL_JOB_STATES,

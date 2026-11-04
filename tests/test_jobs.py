@@ -3,6 +3,7 @@ import pytest
 from armada_client.armada import job_pb2, submit_pb2
 from armada_client.typings import JobState
 from conftest import FakeRpcError, make_job_status_response, make_job_submit_response
+
 from prefect_armada.exceptions import (
     ArmadaJobDefinitionError,
     ArmadaJobFailedError,

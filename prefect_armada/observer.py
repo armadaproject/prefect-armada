@@ -36,8 +36,6 @@ import httpx
 from anyio.to_thread import run_sync
 from armada_client.event import Event as ArmadaEvent
 from cachetools import TTLCache
-from websockets.exceptions import ConnectionClosed
-
 from prefect import __version__, get_client
 from prefect.client.orchestration import PrefectClient
 from prefect.client.schemas.objects import FlowRun
@@ -51,6 +49,8 @@ from prefect.settings import get_current_settings
 from prefect.states import Crashed
 from prefect.utilities.engine import propose_state
 from prefect.utilities.slugify import slugify
+from websockets.exceptions import ConnectionClosed
+
 from prefect_armada.credentials import ArmadaCredentials
 from prefect_armada.events import _stream_job_set_events
 from prefect_armada.exceptions import (

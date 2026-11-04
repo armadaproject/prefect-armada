@@ -13,12 +13,12 @@ import grpc
 import yaml
 from armada_client.armada import job_pb2, submit_pb2
 from armada_client.typings import JobState
-from pydantic import Field
-
 from prefect import task
 from prefect._internal.compatibility.async_dispatch import async_dispatch
 from prefect._internal.concurrency.api import create_call, from_sync
 from prefect.blocks.abstract import JobBlock, JobRun
+from pydantic import Field
+
 from prefect_armada.credentials import ArmadaCredentials
 from prefect_armada.exceptions import (
     ArmadaJobDefinitionError,
