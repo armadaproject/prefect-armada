@@ -145,6 +145,20 @@ _startup_error: Exception | None = None
 _startup_lock = threading.Lock()
 
 
+class _EventHandlingError(Exception):
+    """
+    Wraps an error raised while handling an Armada event.
+
+    Handling an event can fail in many ways (the Prefect API, the events client,
+    malformed annotations), so the error is wrapped to tell it apart from an
+    error in the event stream itself.
+    """
+
+    def __init__(self, error: Exception) -> None:
+        super().__init__(str(error))
+        self.error = error
+
+
 class _JobSetWatchState:
     """Tracks what the observer knows about the jobs in a job set."""
 
@@ -379,8 +393,7 @@ async def _watch_job_set_events(
                             failing_message_id, event_failures = event.id, 1
                         if event_failures < WATCH_RETRY_MAX_ATTEMPTS:
                             # Reconnecting delivers the event again.
-                            handling_error = exc
-                            raise
+                            raise _EventHandlingError(exc) from exc
                         # Retrying an event that keeps failing would stall the
                         # job set's later events indefinitely.
                         logger.warning(
@@ -405,8 +418,10 @@ async def _watch_job_set_events(
                         return
         except asyncio.CancelledError:
             raise
-        except Exception as exc:
+        except grpc.RpcError as exc:
             error = exc
+        except _EventHandlingError as exc:
+            error = handling_error = exc.error
 
         if (
             connected_at is not None

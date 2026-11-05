@@ -138,6 +138,7 @@ import anyio
 import anyio.abc
 import anyio.to_thread
 import grpc
+import httpx
 import prefect
 from armada_client.armada import submit_pb2
 from armada_client.asyncio_client import ArmadaAsyncIOClient
@@ -146,6 +147,7 @@ from prefect.client.schemas.objects import Flow as APIFlow
 from prefect.exceptions import (
     InfrastructureError,
     InfrastructureNotFound,
+    ObjectNotFound,
 )
 from prefect.logging.loggers import get_logger
 from prefect.utilities.dockerutils import get_prefect_image_name
@@ -1231,13 +1233,19 @@ class ArmadaWorker(
             )
             return None
 
+        # Reading the configuration resolves the template's block and variable
+        # references through the Prefect API, then validates the result. It fails
+        # on a malformed template (`KeyError`), an invalid value or reference
+        # (`ValueError`, including pydantic's `ValidationError`), a reference to
+        # a block that does not exist (`ObjectNotFound`), or a Prefect API error
+        # (`httpx.HTTPError`).
         try:
             configuration = await self.job_configuration.from_template_and_values(
                 base_job_template=self._work_pool.base_job_template,
                 values={},
                 client=self._client,
             )
-        except Exception as exc:
+        except (KeyError, ValueError, ObjectNotFound, httpx.HTTPError) as exc:
             self._logger.warning(
                 "Unable to read the work pool's job configuration; skipping the "
                 "Armada queue check: %s",

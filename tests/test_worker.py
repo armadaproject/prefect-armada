@@ -1,23 +1,27 @@
 import asyncio
 import threading
 import uuid
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import anyio.abc
 import grpc
+import httpx
 import pytest
 from armada_client.armada import submit_pb2
 from conftest import FakeRpcError, make_job_submit_response
 from prefect.client.schemas import FlowRun
-from prefect.exceptions import InfrastructureError, InfrastructureNotFound
+from prefect.exceptions import (
+    InfrastructureError,
+    InfrastructureNotFound,
+    ObjectNotFound,
+)
 from prefect.utilities.dockerutils import get_prefect_image_name
 from prefect.workers.base import BaseWorker
 from pydantic import ValidationError
 
-from prefect_armada import ArmadaWorker
 from prefect_armada.credentials import ArmadaClusterConfig, ArmadaCredentials
 from prefect_armada.exceptions import ArmadaObserverStartupError
-from prefect_armada.worker import ArmadaWorkerJobConfiguration
+from prefect_armada.worker import ArmadaWorker, ArmadaWorkerJobConfiguration
 
 try:
     from prefect.workers.utilities import get_locally_installed_worker_metadata
@@ -1002,6 +1006,30 @@ class TestQueueCheckOnStartup:
             assert worker.is_setup
 
         assert "Unable to verify that Armada queue 'prefect' exists" in caplog.text
+
+    @pytest.mark.parametrize(
+        "error",
+        [
+            KeyError("job_configuration"),
+            ValueError("invalid template"),
+            ObjectNotFound(http_exc=Exception("missing block")),
+            httpx.ConnectError("Prefect API unavailable"),
+        ],
+    )
+    async def test_worker_starts_when_the_configuration_cannot_be_read(
+        self, mock_armada_client, caplog, monkeypatch: pytest.MonkeyPatch, error
+    ):
+        monkeypatch.setattr(
+            ArmadaWorkerJobConfiguration,
+            "from_template_and_values",
+            AsyncMock(side_effect=error),
+        )
+
+        async with ArmadaWorker(work_pool_name=f"test-{uuid.uuid4()}") as worker:
+            assert worker.is_setup
+
+        assert "Unable to read the work pool's job configuration" in caplog.text
+        mock_armada_client.get_queue.assert_not_awaited()
 
 
 class TestWorkPoolTypeMetadata:

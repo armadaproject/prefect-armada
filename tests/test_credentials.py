@@ -302,9 +302,11 @@ class TestArmadaCredentials:
                     host="127.0.0.1", binoculars_port=port, disable_ssl=True
                 )
             )
-            with credentials.get_binoculars_client() as client:
-                with pytest.raises(grpc.RpcError) as exc_info:
-                    client.logs(job_id="job-1", since_time="")
+            with (
+                credentials.get_binoculars_client() as client,
+                pytest.raises(grpc.RpcError) as exc_info,
+            ):
+                client.logs(job_id="job-1", since_time="")
         finally:
             release.set()
             server.stop(0)

@@ -471,8 +471,8 @@ class TestWatchJobSet:
     async def test_gives_up_after_the_retry_limit(
         self, mock_events_client, mock_armada_client
     ):
-        mock_armada_client.get_job_events_stream.side_effect = RuntimeError(
-            "connection reset"
+        mock_armada_client.get_job_events_stream.side_effect = FakeRpcError(
+            grpc.StatusCode.UNAVAILABLE, "connection reset"
         )
 
         await observer._watch_job_set(ArmadaCredentials(), "my-queue", "my-job-set")
@@ -498,7 +498,7 @@ class TestWatchJobSet:
                 ]
             ),
             # More consecutive failures than the retry limit
-            *[RuntimeError("connection reset")] * 5,
+            *[FakeRpcError(grpc.StatusCode.UNAVAILABLE, "connection reset")] * 5,
             FakeEventStream(
                 [make_event("failed", job_id="job-1", message_id="2")], hang=True
             ),
