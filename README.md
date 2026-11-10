@@ -20,50 +20,81 @@ have it instantiate a basic K8s (`kind`) cluster and deploy Armada on top of it.
 
 ### Installation
 
+You can use `prefect-armada` by either installing a PIP package, or by building and running from this source
+repository.
+
 Install `prefect-armada` with `pip`:
 
 ```bash
 pip install prefect-armada
 ```
 
-### Running flow runs as Armada jobs
+### Running the Prefect Server locally
 
-Create an Armada work pool and start a worker:
-
-```bash
-prefect work-pool create --type armada my-armada-pool
-prefect worker start --pool my-armada-pool
+Build the Prefect UI
+In a copy of the [Prefect repo](https://github.com/PrefectHQ/prefect), build the UI:
+```
+$ uv run prefect dev build-ui --include-v2
 ```
 
-By default the worker connects to `localhost:50051` and submits to the `prefect`
-queue. Connection details can be set on the work pool (via an
-`ArmadaClusterConfig` or `ArmadaCredentials` block) or in the worker's
-environment:
+Start the Prefect Server
+```
+$ PREFECT_UI_API_URL="http://EXTERNAL-IP-ADDRESS:4200/api" uv run prefect server start \
+		--host 0.0.0.0 --port 4200 --analytics-off
+```
+If it prompts you for a profile, you can just press <RETURN> to accept the default `ephemeral` profile, and
+accept the default PREFECT_API_URL value.
 
-```bash
-export PREFECT_INTEGRATIONS_ARMADA_CONNECTION_HOST="armada.example.com"
-export PREFECT_INTEGRATIONS_ARMADA_CONNECTION_PORT="50051"
-export PREFECT_INTEGRATIONS_ARMADA_CONNECTION_DISABLE_SSL="false"
+### Creating and Running an Armada work pool
+
+First, create an Armada Work Pool. In your copy of the `prefect-armada` repo, run:
+```
+$ uv run prefect work-pool create --name my-armada-pool --type armada
 ```
 
-The `ARMADA_SERVER` and `ARMADA_PORT` variables used by Armada's own tooling are
-also honored.
-
-Flows can also be sent to an Armada work pool directly, without a deployment:
-
-```python
-from prefect import flow
-from prefect_armada.decorators import armada
-
-
-@armada(work_pool="my-armada-pool")
-@flow
-def my_flow():
-    print("Hello from Armada!")
-
-
-my_flow()
+Edit the settings for the work pool for your local Armada cluster. First, dump
+the settings to a JSON file:
 ```
+$ uv run prefect work-pool get-default-base-job-template --type armada > armada-base-job-template.py
+```
+Edit the file and change settings as needed (here we use Vim, but any text editor is fine):
+```
+$ vim armada-base-job-template.json
+```
+Note that some settings are quoted strings, some are (unquoted) boolean
+values, and some are integer values. For each setting sub-clause, search for the `default` key and change its value to the appropriate default value.  If using the armada-operator to set up an Armada cluster, the settings should be:
+
+- `armada_host`: "<IP address of your Armada cluster>"
+- `armada_port`: 30002
+- `armada_disable_ssl`: true
+- `api_dns_name`: "172.18.0.1"
+
+Save the file and update the work pool definition with it:
+```
+$ uv run prefect work-pool update --name my-armada-pool --base-job-template armada-base-job-template.py
+```
+
+View the work-pool's settings and confirm they are correct:
+```
+$ uv run prefect work-pool inspect --name my-armada-pool | less
+```
+If all looks good, start the pool worker:
+```
+$ uv run prefect worker start --pool "my-armada-pool"
+```
+If it complains that the Armada queue it is using (e.g. `prefect`) does not
+exist, you can create it by running `armadactl create queue prefect`; then try
+starting the worker again.
+
+### Submitting a Test Job
+
+An example test job is in `examples/hello_armada.py`. To run it:
+```
+$ cd examples
+$ uv run hello_armada.py
+$ uv run prefect deployment run 'hello/hello-armada'
+```
+You should be able to see the Flow run in the Prefect Server web UI.
 
 ### Submitting jobs from a flow
 
