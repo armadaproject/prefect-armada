@@ -1,0 +1,84 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+build/
+dist/
+sdist/
+
+# uv (consider committing later)
+uv.lock
+
+# Test artifacts
+.benchmarks/
+.coverage
+.coverage.*.*
+.prefect-results
+.pytest_cache/
+
+# Type checking artifacts
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# IPython
+profile_default/
+ipython_config.py
+*.ipynb_checkpoints/*
+
+# Profiling
+/prof
+
+# Environments
+.python-version
+.env
+.envrc
+.venv
+env/
+venv/
+
+# Documentation artifacts
+# gschema.json
+site/
+.cache/
+src/mkdocs-material
+
+**/node_modules
+
+# Databases
+*.db
+local.duckdb
+local.duckdb.wal
+
+# API artifacts
+
+# MacOS
+.DS_Store
+
+# Dask
+dask-worker-space/
+
+# Editors
+.idea/
+.vscode/
+.zed/
+!ui/.vscode/
+
+# Prefect files
+prefect.toml
+prefect.yaml
+
+# setuptools-scm generated files
+_version.py
+*.log
+
+# Pyright type analysis report
+prefect-analysis.json
+CLAUDE.md
+
+# Local planning artifacts
+.planning/
+repros/
